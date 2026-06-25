@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>广金睿致私募证券投资基金</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            background: #0d0d0d;
+            color: #fff;
+        }
+        .presentation {
+            width: 100%; height: 100%;
+            position: relative;
+        }
+        .slide {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            padding: 40px 28px;
+            text-align: center;
+        }
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+        .slide.prev {
+            opacity: 0;
+            transform: translateY(-40px) scale(0.98);
+        }
+
+        /* ====== 配色变量 ====== */
+        :root {
+            --gold: #c9a962;
+            --gold-light: #e8d5a3;
+            --gold-dark: #8b7340;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.6);
+            --text-muted: rgba(255,255,255,0.35);
+            --bg-dark: #0d0d0d;
+            --bg-card: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+        }
+
+        /* ====== 封面页 ====== */
+        .slide-cover {
+            background: linear-gradient(160deg, #0a0a0a 0%, #141210 40%, #1a1510 100%);
+        }
+        .slide-cover::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,169,98,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(201,169,98,0.05) 0%, transparent 50%);
+        }
+        .cover-logo {
+            position: relative; z-index: 1;
+            font-size: 14px;
+            color: var(--gold);
+            letter-spacing: 6px;
+            margin-bottom: 50px;
+            padding: 8px 24px;
+            border: 1px solid rgba(201,169,98,0.35);
+            border-radius: 4px;
+        }
+        .cover-title {
+            position: relative; z-index: 1;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--gold-light);
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        .cover-subtitle {
+            position: relative; z-index: 1;
+            font-size: 22px;
+            color: var(--text-secondary);
+            letter-spacing: 8px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+        .cover-line {
+            position: relative; z-index: 1;
+            width: 100px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 0 auto 40px;
+            animation: scaleIn 1s ease 0.6s both;
+        }
+        .cover-company {
+            position: relative; z-index: 1;
+            font-size: 16px;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            animation: fadeIn 1s ease 0.8s both;
+        }
+        .cover-slogan {
+            position: relative; z-index: 1;
+            font-size: 13px;
+            color: var(--gold-dark);
+            letter-spacing: 4px;
+            margin-top: 16px;
+            animation: fadeIn 1s ease 1s both;
+        }
+
+        /* ====== 目录页 ====== */
+        .slide-toc {
+            background: linear-gradient(180deg, #0d0d0d 0%, #12100e 100%);
+        }
+        .toc-label {
+            font-size: 12px; color: var(--gold);
+            letter-spacing: 4px; margin-bottom: 12px;
+        }
+        .toc-title {
+            font-size: 28px; font-weight: 700;
+            color: var(--gold-light); letter-spacing: 4px;
+            margin-bottom: 50px;
+        }
+        .toc-list {
+            list-style: none; text-align: left;
+            max-width: 400px; width: 100%;
+        }
+        .toc-item {
+            display: flex; align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .toc-item:last-child { border-bottom: none; }
+        .toc-num {
+            font-size: 36px; font-weight: 800;
+            color: var(--gold-dark); width: 60px;
+            flex-shrink: 0;
+        }
+        .toc-text {
+            font-size: 18px; color: var(--text-primary);
+            letter-spacing: 2px;
+        }
+        .toc-arrow {
+            margin-left: auto; color: var(--gold-dark);
+            font-size: 18px;
+        }
+
+        /* ====== 章节封面 ====== */
+        .slide-chapter {
+            background: linear-gradient(160deg, #0a0a0a 0%, #141210 50%, #1a1510 100%);
+        }
+        .slide-chapter::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,169,98,0.08) 0%, transparent 60%);
+        }
+        .chapter-label {
+            position: relative; z-index: 1;
+            font-size: 12px; color: var(--gold);
+            letter-spacing: 6px; margin-bottom: 20px;
+        }
+        .chapter-num {
+            position: relative; z-index: 1;
+            font-size: 72px; font-weight: 900;
+            color: rgba(201,169,98,0.15);
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        .chapter-title {
+            position: relative; z-index: 1;
+            font-size: 32px; font-weight: 700;
+            color: var(--gold-light); letter-spacing: 6px;
+            margin-bottom: 24px;
+        }
+        .chapter-desc {
+            position: relative; z-index: 1;
+            font-size: 15px; color: var(--text-secondary);
+            max-width: 420px; line-height: 1.8;
+        }
+
+        /* ====== 内容页通用 ====== */
+        .slide-content {
+            background: linear-gradient(180deg, #0d0d0d 0%, #12100e 100%);
+        }
+        .page-label {
+            font-size: 11px; color: var(--gold);
+            letter-spacing: 3px; margin-bottom: 8px;
+        }
+        .page-title {
+            font-size: 26px; font-weight: 700;
+            color: var(--gold-light); letter-spacing: 3px;
+            margin-bottom: 36px;
+        }
+        .page-num {
+            position: absolute;
+            top: 28px; right: 28px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.15);
+            letter-spacing: 1px;
+        }
+
+        /* ====== 信息卡片网格 ====== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            width: 100%; max-width: 520px;
+            text-align: left;
+        }
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            display: flex; align-items: center; gap: 16px;
+        }
+        .info-icon {
+            width: 40px; height: 40px;
+            background: rgba(201,169,98,0.1);
+            border: 1px solid rgba(201,169,98,0.2);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .info-main {
+            flex: 1;
+        }
+        .info-label {
+            font-size: 13px; color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .info-value {
+            font-size: 15px; color: var(--text-primary);
+            font-weight: 600;
+        }
+        .info-badge {
+            font-size: 11px; color: var(--gold-dark);
+            letter-spacing: 1px;
+        }
+
+        /* ====== 团队卡片 ====== */
+        .team-list {
+            display: flex; flex-direction: column;
+            gap: 14px;
+            width: 100%; max-width: 540px;
+            text-align: left;
+        }
+        .team-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px 24px;
+            border-left: 3px solid var(--gold-dark);
+        }
+        .team-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 10px;
+        }
+        .team-avatar {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700;
+            color: #fff; flex-shrink: 0;
+        }
+        .team-name-box {
+            flex: 1;
+        }
+        .team-name {
+            font-size: 17px; font-weight: 700;
+            color: var(--gold-light);
+        }
+        .team-role {
+            font-size: 12px; color: var(--gold);
+            letter-spacing: 1px;
+        }
+        .team-exp {
+            font-size: 13px; color: var(--text-secondary);
+            line-height: 1.7;
+            padding-left: 54px;
+        }
+
+        /* ====== 数据统计 ====== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            width: 100%; max-width: 500px;
+            margin-bottom: 36px;
+        }
+        .stat-card {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 32px; font-weight: 800;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 12px; color: var(--text-muted);
+            margin-top: 8px; letter-spacing: 1px;
+        }
+        .honor-list {
+            list-style: none; text-align: left;
+            max-width: 500px; width: 100%;
+        }
+        .honor-item {
+            display: flex; align-items: flex-start;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .honor-item:last-child { border-bottom: none; }
+        .honor-year {
+            font-size: 14px; font-weight: 700;
+            color: var(--gold); width: 50px;
+            flex-shrink: 0;
+        }
+        .honor-text {
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ====== 策略页 ====== */
+        .strategy-desc {
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.9;
+            max-width: 520px;
+            margin-bottom: 36px;
+            text-align: left;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            border-left: 3px solid var(--gold-dark);
+        }
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            width: 100%; max-width: 480px;
+        }
+        .pillar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .pillar-icon {
+            font-size: 32px; margin-bottom: 14px;
+        }
+        .pillar-title {
+            font-size: 15px; font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        .pillar-sub {
+            font-size: 12px; color: var(--text-muted);
+        }
+
+        /* ====== 架构图 ====== */
+        .arch-flow {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 0;
+            width: 100%; max-width: 460px;
+        }
+        .arch-row {
+            display: flex; justify-content: center;
+            gap: 16px; width: 100%;
+        }
+        .arch-box {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+        }
+        .arch-box.highlight {
+            border-color: rgba(201,169,98,0.35);
+            background: rgba(201,169,98,0.06);
+        }
+        .arch-title {
+            font-size: 14px; font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+        }
+        .arch-desc {
+            font-size: 12px; color: var(--text-muted);
+        }
+        .arch-arrow {
+            font-size: 20px; color: var(--gold-dark);
+            padding: 4px 0;
+        }
+        .arch-note {
+            font-size: 12px; color: var(--text-muted);
+            line-height: 1.8;
+            margin-top: 20px;
+            max-width: 480px;
+            text-align: left;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+
+        /* ====== 产品要素表格 ====== */
+        .product-table-wrap {
+            width: 100%; max-width: 540px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .product-table-wrap::-webkit-scrollbar { width: 3px; }
+        .product-table-wrap::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+        .product-table tr {
+            border-bottom: 1px solid var(--border);
+        }
+        .product-table tr:last-child { border-bottom: none; }
+        .product-table td {
+            padding: 12px 16px;
+            vertical-align: top;
+        }
+        .product-table td:first-child {
+            color: var(--gold);
+            font-weight: 600;
+            width: 30%;
+            white-space: nowrap;
+        }
+        .product-table td:last-child {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ====== 风控页 ====== */
+        .risk-grid {
+            display: flex; flex-direction: column;
+            gap: 18px;
+            width: 100%; max-width: 520px;
+            text-align: left;
+        }
+        .risk-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            border-left: 3px solid var(--gold-dark);
+        }
+        .risk-title {
+            font-size: 16px; font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .risk-title .icon {
+            font-size: 20px;
+        }
+        .risk-desc {
+            font-size: 13px; color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* ====== 结尾页 ====== */
+        .slide-ending {
+            background: linear-gradient(160deg, #0a0a0a 0%, #141210 50%, #1a1510 100%);
+        }
+        .slide-ending::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(201,169,98,0.1) 0%, transparent 60%);
+        }
+        .ending-slogan {
+            position: relative; z-index: 1;
+            font-size: 36px; font-weight: 800;
+            color: var(--gold-light);
+            letter-spacing: 8px;
+            margin-bottom: 40px;
+        }
+        .ending-line {
+            position: relative; z-index: 1;
+            width: 80px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 0 auto 40px;
+        }
+        .ending-company {
+            position: relative; z-index: 1;
+            font-size: 15px; color: var(--text-secondary);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .ending-address {
+            position: relative; z-index: 1;
+            font-size: 13px; color: var(--text-muted);
+            margin-bottom: 36px;
+        }
+        .ending-disclaimer {
+            position: relative; z-index: 1;
+            font-size: 11px; color: rgba(255,255,255,0.2);
+            line-height: 1.8;
+            max-width: 440px;
+            padding: 0 20px;
+        }
+
+        /* ====== 导航控制 ====== */
+        .nav-controls {
+            position: fixed;
+            bottom: 24px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; align-items: center; gap: 14px;
+            z-index: 100;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(10px);
+            padding: 10px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(201,169,98,0.12);
+        }
+        .nav-btn {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: transparent;
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center; justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: rgba(201,169,98,0.15);
+            color: var(--gold);
+            border-color: rgba(201,169,98,0.3);
+        }
+        .nav-dots {
+            display: flex; gap: 8px;
+        }
+        .nav-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            background: var(--gold);
+            width: 22px; border-radius: 4px;
+        }
+        .auto-play-btn {
+            font-size: 11px;
+            color: rgba(255,255,255,0.35);
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+            letter-spacing: 1px;
+        }
+        .auto-play-btn:hover {
+            color: var(--gold);
+            background: rgba(201,169,98,0.1);
+        }
+        .auto-play-btn.playing {
+            color: var(--gold);
+        }
+
+        /* ====== 进度条 ====== */
+        .progress-bar {
+            position: fixed; top: 0; left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+            z-index: 1000;
+            transition: width 0.5s ease;
+        }
+
+        /* ====== 提示 ====== */
+        .swipe-hint {
+            position: fixed;
+            bottom: 78px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 2px;
+            z-index: 100;
+            animation: pulse 2.5s infinite;
+        }
+
+        /* ====== 动画 ====== */
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(25px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes scaleIn { from{opacity:0;transform:scaleX(0)} to{opacity:1;transform:scaleX(1)} }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="presentation" id="presentation">
+
+        <!-- 第1页：封面 -->
+        <div class="slide slide-cover active" data-index="0">
+            <div class="cover-logo">GUANGJIN RUIZHI</div>
+            <h1 class="cover-title">广金睿致</h1>
+            <p class="cover-subtitle">私募证券投资基金</p>
+            <div class="cover-line"></div>
+            <p class="cover-company">广东广金投资管理有限公司</p>
+            <p class="cover-slogan">在长跑中胜出</p>
+        </div>
+
+        <!-- 第2页：目录 -->
+        <div class="slide slide-toc" data-index="1">
+            <div class="page-num">02 / 13</div>
+            <div class="toc-label">CONTENTS</div>
+            <h2 class="toc-title">目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <span class="toc-num">01</span>
+                    <span class="toc-text">公司及团队</span>
+                    <span class="toc-arrow">›</span>
+                </li>
+                <li class="toc-item">
+                    <span class="toc-num">02</span>
+                    <span class="toc-text">投资策略</span>
+                    <span class="toc-arrow">›</span>
+                </li>
+                <li class="toc-item">
+                    <span class="toc-num">03</span>
+                    <span class="toc-text">产品介绍</span>
+                    <span class="toc-arrow">›</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 第3页：章节1 - 公司及团队 -->
+        <div class="slide slide-chapter" data-index="2">
+            <div class="page-num">03 / 13</div>
+            <div class="chapter-label">CHAPTER</div>
+            <div class="chapter-num">01</div>
+            <h2 class="chapter-title">公司及团队</h2>
+            <p class="chapter-desc">十八年深耕资本市场，专业投研团队护航</p>
+        </div>
+
+        <!-- 第4页：广金概况 -->
+        <div class="slide slide-content" data-index="3">
+            <div class="page-num">04 / 13</div>
+            <div class="page-label">COMPANY PROFILE</div>
+            <h2 class="page-title">广金概况</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📅</div>
+                    <div class="info-main">
+                        <div class="info-label">成立时间</div>
+                        <div class="info-value">2007年11月，十八年稳健运营</div>
+                    </div>
+                    <div class="info-badge">Since 2007</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">💰</div>
+                    <div class="info-main">
+                        <div class="info-label">实缴资本</div>
+                        <div class="info-value">1000万元人民币</div>
+                    </div>
+                    <div class="info-badge">Capital</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">📍</div>
+                    <div class="info-main">
+                        <div class="info-label">办公地址</div>
+                        <div class="info-value">广州市天河区马场路16号富力盈盛</div>
+                    </div>
+                    <div class="info-badge">Guangzhou</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🏆</div>
+                    <div class="info-main">
+                        <div class="info-label">资质荣誉</div>
+                        <div class="info-value">2014年首批私募基金管理人</div>
+                    </div>
+                    <div class="info-badge">Pioneer</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">✅</div>
+                    <div class="info-main">
+                        <div class="info-label">诚信记录</div>
+                        <div class="info-value">近三年诚信良好，无行政处罚记录</div>
+                    </div>
+                    <div class="info-badge">Integrity</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第5页：投研团队 -->
+        <div class="slide slide-content" data-index="4">
+            <div class="page-num">05 / 13</div>
+            <div class="page-label">RESEARCH TEAM</div>
+            <h2 class="page-title">投研团队</h2>
+            <div class="team-list">
+                <div class="team-card">
+                    <div class="team-header">
+                        <div class="team-avatar">刘</div>
+                        <div class="team-name-box">
+                            <div class="team-name">刘壮华</div>
+                            <div class="team-role">总经理 · 基金经理</div>
+                        </div>
+                    </div>
+                    <div class="team-exp">西安交通大学金融学本科，中山大学管理学硕士 · 30年投资经历，专注周期股投资</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-header">
+                        <div class="team-avatar">蔡</div>
+                        <div class="team-name-box">
+                            <div class="team-name">蔡祥</div>
+                            <div class="team-role">副总经理 · 基金经理</div>
+                        </div>
+                    </div>
+                    <div class="team-exp">复旦大学理学士，曾任上市公司董秘 · 30年投资经历，专注消费与医药股投资</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-header">
+                        <div class="team-avatar">郭</div>
+                        <div class="team-name-box">
+                            <div class="team-name">郭展全</div>
+                            <div class="team-role">投研总监 · 基金经理</div>
+                        </div>
+                    </div>
+                    <div class="team-exp">清华大学会计学博士，中山大学副教授 · 25年投资经历，擅长企业财务报表分析</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-header">
+                        <div class="team-avatar">王</div>
+                        <div class="team-name-box">
+                            <div class="team-name">王海仙</div>
+                            <div class="team-role">投资顾问</div>
+                        </div>
+                    </div>
+                    <div class="team-exp">中山大学理学学士、硕士 · 15年投资经历，专注科技成长股领域</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第6页：荣誉与业绩 -->
+        <div class="slide slide-content" data-index="5">
+            <div class="page-num">06 / 13</div>
+            <div class="page-label">HONORS & PERFORMANCE</div>
+            <h2 class="page-title">荣誉与业绩</h2>
+            <ul class="honor-list" style="margin-bottom:32px;">
+                <li class="honor-item">
+                    <span class="honor-year">2009</span>
+                    <span class="honor-text">中国最佳私募证券基金管理机构，融智评级"五星"</span>
+                </li>
+                <li class="honor-item">
+                    <span class="honor-year">2018</span>
+                    <span class="honor-text">长期价值先锋奖</span>
+                </li>
+                <li class="honor-item">
+                    <span class="honor-year">2024</span>
+                    <span class="honor-text">广金致远 · 大湾区股票策略收益前十</span>
+                </li>
+                <li class="honor-item">
+                    <span class="honor-year">2026</span>
+                    <span class="honor-text">三年期、五年期投资先锋案例</span>
+                </li>
+            </ul>
+            <div class="page-label" style="margin-bottom:16px;">代表产品业绩</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">26.64%</div>
+                    <div class="stat-label">广金致远<br>年化收益</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">39.79%</div>
+                    <div class="stat-label">广金华灿<br>年化收益</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">105%</div>
+                    <div class="stat-label">广金睿远<br>年化收益</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第7页：章节2 - 投资策略 -->
+        <div class="slide slide-chapter" data-index="6">
+            <div class="page-num">07 / 13</div>
+            <div class="chapter-label">CHAPTER</div>
+            <div class="chapter-num">02</div>
+            <h2 class="chapter-title">投资策略</h2>
+            <p class="chapter-desc">周期共振与胜率赔率双击框架，追求绝对收益</p>
+        </div>
+
+        <!-- 第8页：投资策略详情 -->
+        <div class="slide slide-content" data-index="7">
+            <div class="page-num">08 / 13</div>
+            <div class="page-label">STRATEGY FRAMEWORK</div>
+            <h2 class="page-title">周期共振与胜率赔率双击框架</h2>
+            <div class="strategy-desc">
+                以宏观经济周期分析为基础，结合行业景气度研判，在周期共振节点精准布局。通过胜率与赔率的双重评估框架，筛选高确定性、高安全边际的投资标的，追求长期绝对收益。
+            </div>
+            <div class="page-label" style="margin-bottom:16px;">三大投研支柱</div>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">📈</div>
+                    <div class="pillar-title">周期股投资</div>
+                    <div class="pillar-sub">30年深耕</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">💊</div>
+                    <div class="pillar-title">消费医药</div>
+                    <div class="pillar-sub">长期价值</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🔬</div>
+                    <div class="pillar-title">科技成长</div>
+                    <div class="pillar-sub">创新驱动</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第9页：章节3 - 产品介绍 -->
+        <div class="slide slide-chapter" data-index="8">
+            <div class="page-num">09 / 13</div>
+            <div class="chapter-label">CHAPTER</div>
+            <div class="chapter-num">03</div>
+            <h2 class="chapter-title">产品介绍</h2>
+            <p class="chapter-desc">广金睿致私募证券投资基金产品要素</p>
+        </div>
+
+        <!-- 第10页：产品架构 -->
+        <div class="slide slide-content" data-index="9">
+            <div class="page-num">10 / 13</div>
+            <div class="page-label">FUND STRUCTURE</div>
+            <h2 class="page-title">契约型基金投资架构</h2>
+            <div class="arch-flow">
+                <div class="arch-row">
+                    <div class="arch-box">
+                        <div class="arch-title">基金管理公司</div>
+                        <div class="arch-desc">广东广金投资</div>
+                    </div>
+                    <div class="arch-box highlight">
+                        <div class="arch-title" style="color:var(--gold-light)">私募基金产品</div>
+                        <div class="arch-desc" style="color:var(--text-secondary)">广金睿致</div>
+                    </div>
+                    <div class="arch-box">
+                        <div class="arch-title">托管机构</div>
+                        <div class="arch-desc">银河证券</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-row">
+                    <div class="arch-box">
+                        <div class="arch-title">证券市场</div>
+                        <div class="arch-desc">股票/债券/期货</div>
+                    </div>
+                    <div class="arch-box">
+                        <div class="arch-title">投资者</div>
+                        <div class="arch-desc">合格投资者</div>
+                    </div>
+                </div>
+            </div>
+            <div class="arch-note">
+                基金管理人发起并管理基金产品，投资者通过认购、申购或赎回参与，托管机构负责资金托管、信息披露与收益结算，形成专业化、规范化的私募证券投资基金运作体系。
+            </div>
+        </div>
+
+        <!-- 第11页：产品要素 -->
+        <div class="slide slide-content" data-index="10">
+            <div class="page-num">11 / 13</div>
+            <div class="page-label">PRODUCT DETAILS</div>
+            <h2 class="page-title" style="margin-bottom:24px;">广金睿致产品要素</h2>
+            <div class="product-table-wrap">
+                <table class="product-table">
+                    <tr><td>基金名称</td><td>广金睿致私募证券投资基金</td></tr>
+                    <tr><td>基金类型</td><td>契约型开放式</td></tr>
+                    <tr><td>存续期限</td><td>20年</td></tr>
+                    <tr><td>基金管理人</td><td>广东广金投资管理有限公司</td></tr>
+                    <tr><td>基金经理</td><td>刘壮华</td></tr>
+                    <tr><td>托管人</td><td>银河证券股份有限公司</td></tr>
+                    <tr><td>投资范围</td><td>股票、债券、期货、期权、基金、银行存款、融资融券等</td></tr>
+                    <tr><td>管理费</td><td>1% / 年</td></tr>
+                    <tr><td>业绩报酬</td><td>20%，采用单客户高水位法</td></tr>
+                    <tr><td>开放日</td><td>每周一、二（如遇节假日则当日不再开放）</td></tr>
+                    <tr><td>首次认购</td><td>人民币100万元起，追加金额不低于1万元</td></tr>
+                    <tr><td>赎回费率</td><td>≤360天 1%；>360天 0%</td></tr>
+                    <tr><td>份额锁定期</td><td>管理人及员工跟投份额6个月；其他份额3个月</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 第12页：运营与风控 -->
+        <div class="slide slide-content" data-index="11">
+            <div class="page-num">12 / 13</div>
+            <div class="page-label">RISK CONTROL</div>
+            <h2 class="page-title">运营与风控</h2>
+            <div class="risk-grid">
+                <div class="risk-card">
+                    <div class="risk-title"><span class="icon">🛡️</span>全流程内控体系</div>
+                    <div class="risk-desc">覆盖投资研究、产品运营、投后管理、后台运营等各业务环节，建立主要风险点对应的控制措施。</div>
+                </div>
+                <div class="risk-card">
+                    <div class="risk-title"><span class="icon">📊</span>日常风险监控</div>
+                    <div class="risk-desc">基于投研层面监控指标，定期跟踪报告、晨会讨论，及时反馈组合跟踪情况并落实执行。</div>
+                </div>
+                <div class="risk-card">
+                    <div class="risk-title"><span class="icon">⚙️</span>专业化运营平台</div>
+                    <div class="risk-desc">使用易私慕、信E+等行业成熟专业机构运营平台，提供程序化流程与合规指导。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第13页：结尾 -->
+        <div class="slide slide-ending" data-index="12">
+            <h2 class="ending-slogan">在长跑中胜出</h2>
+            <div class="ending-line"></div>
+            <p class="ending-company">广东广金投资管理有限公司</p>
+            <p class="ending-address">广州市天河区马场路16号富力盈盛B栋1108</p>
+            <p class="ending-disclaimer">
+                本材料仅供合格投资者参考，不构成投资建议。投资有风险，选择需谨慎。<br>
+                产品过往业绩不代表未来表现，投资者购买前应当仔细阅读产品合同及风险揭示书。
+            </p>
+        </div>
+
+    </div>
+
+    <div class="swipe-hint" id="swipeHint">点击或滑动切换页面</div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">◀</button>
+        <div class="nav-dots" id="navDots"></div>
+        <button class="nav-btn" id="nextBtn">▶</button>
+        <button class="auto-play-btn" id="autoPlayBtn">▶ 自动播放</button>
+    </div>
+
+    <script>
+        (function() {
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+            let currentIndex = 0;
+            let autoPlayInterval = null;
+            let isAutoPlaying = false;
+            const AUTO_PLAY_DELAY = 5000;
+
+            const progressBar = document.getElementById('progressBar');
+            const navDots = document.getElementById('navDots');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const autoPlayBtn = document.getElementById('autoPlayBtn');
+            const swipeHint = document.getElementById('swipeHint');
+
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                dot.addEventListener('click', () => { stopAutoPlay(); goToSlide(i); });
+                navDots.appendChild(dot);
+            }
+
+            function updateSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active', 'prev');
+                    if (i === index) slide.classList.add('active');
+                    else if (i < index) slide.classList.add('prev');
+                });
+                document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+                progressBar.style.width = ((index + 1) / totalSlides * 100) + '%';
+                currentIndex = index;
+            }
+
+            function goToSlide(index) {
+                if (index < 0 || index >= totalSlides) return;
+                updateSlide(index);
+            }
+            function nextSlide() {
+                goToSlide(currentIndex < totalSlides - 1 ? currentIndex + 1 : 0);
+            }
+            function prevSlide() {
+                goToSlide(currentIndex > 0 ? currentIndex - 1 : totalSlides - 1);
+            }
+
+            function startAutoPlay() {
+                if (isAutoPlaying) return;
+                isAutoPlaying = true;
+                autoPlayBtn.textContent = '⏸ 暂停';
+                autoPlayBtn.classList.add('playing');
+                swipeHint.textContent = '自动播放中...';
+                autoPlayInterval = setInterval(nextSlide, AUTO_PLAY_DELAY);
+            }
+            function stopAutoPlay() {
+                if (!isAutoPlaying) return;
+                isAutoPlaying = false;
+                autoPlayBtn.textContent = '▶ 自动播放';
+                autoPlayBtn.classList.remove('playing');
+                swipeHint.textContent = '点击或滑动切换页面';
+                clearInterval(autoPlayInterval);
+            }
+            function toggleAutoPlay() {
+                isAutoPlaying ? stopAutoPlay() : startAutoPlay();
+            }
+
+            prevBtn.addEventListener('click', () => { stopAutoPlay(); prevSlide(); });
+            nextBtn.addEventListener('click', () => { stopAutoPlay(); nextSlide(); });
+            autoPlayBtn.addEventListener('click', toggleAutoPlay);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                    e.preventDefault(); stopAutoPlay(); nextSlide();
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault(); stopAutoPlay(); prevSlide();
+                }
+            });
+
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+            document.addEventListener('touchend', (e) => {
+                const diff = touchStartY - e.changedTouches[0].screenY;
+                if (Math.abs(diff) > 50) {
+                    stopAutoPlay();
+                    diff > 0 ? nextSlide() : prevSlide();
+                }
+            }, { passive: true });
+
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.nav-controls')) return;
+                const x = e.clientX / document.body.getBoundingClientRect().width;
+                stopAutoPlay();
+                if (x > 0.6) nextSlide();
+                else if (x < 0.4) prevSlide();
+            });
+
+            updateSlide(0);
+            setTimeout(startAutoPlay, 2000);
+        })();
+    </script>
+</body>
+</html>
